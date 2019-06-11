@@ -80,6 +80,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -97,6 +98,15 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="License-LGPL.txt" />
+    <None Include="Resources\nw.png" />
+    <None Include="Resources\Webp.net-resizeimage %2810%29.png" />
+    <None Include="Resources\Webp.net-resizeimage %289%29.png" />
+    <None Include="Resources\Webp.net-resizeimage %288%29.png" />
+    <None Include="Resources\Webp.net-resizeimage %287%29.png" />
+    <None Include="Resources\Webp.net-resizeimage %286%29.png" />
+    <None Include="Resources\Webp.net-resizeimage %285%29.png" />
+    <None Include="Resources\Webp.net-resizeimage %284%29.png" />
+    <None Include="Resources\Webp.net-resizeimage %283%29.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\EMGU.CV.4.1.0.3420\build\EMGU.CV.targets" Condition="Exists('..\packages\EMGU.CV.4.1.0.3420\build\EMGU.CV.targets')" />

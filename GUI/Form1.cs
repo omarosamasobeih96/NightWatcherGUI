@@ -23,8 +23,11 @@ namespace GUI {
 		private double[] predictions;
 		private int segment_size;
 		private int running_segment_index;
+        private const double THRESHOLD = 0.5;
+        private const string ANOMALY = "Anomaly";
+        private const string NORMAL = "Normal";
 
-		private void ProcessFrame(object sender, EventArgs e) {
+        private void ProcessFrame(object sender, EventArgs e) {
 			if (capture != null && capture.Ptr != IntPtr.Zero) {
 				capture.Retrieve(frame, 0);
 				pictureBox1.Image = frame.Bitmap;
@@ -36,13 +39,25 @@ namespace GUI {
 			capture.ImageGrabbed += ProcessFrame;
 			frame = new Mat();
 			try {
+                classification.Visible = true;
 				while (is_playing == true && running_frame_index < frame_count) {
 					if (running_frame_index == segment_size * (1 + running_segment_index)) running_segment_index += 1;
 					capture.SetCaptureProperty(Emgu.CV.CvEnum.CapProp.PosFrames, running_frame_index);
 					capture.Read(running_frame);
 					pictureBox1.Image = running_frame.Bitmap;
 					running_frame_index += 1;
-					classification.Text = predictions[running_segment_index].ToString();
+                    if (predictions[running_segment_index] > THRESHOLD)
+                    {
+                        classification.Text = ANOMALY;
+                        classification.ForeColor = System.Drawing.Color.Red;
+                    }
+                    else
+                    {
+                        classification.Text = NORMAL;
+                        classification.ForeColor = System.Drawing.Color.Green;
+                   
+                    }
+
 					await Task.Delay(500 / frame_rate);
 				}
 			}
@@ -66,7 +81,12 @@ namespace GUI {
 
 		public Form1() {
 			InitializeComponent();
-		}
+            classification.Visible = false;
+            
+            classification.Parent = pictureBox1;
+         
+            classification.BackColor = Color.Transparent;
+        }
 
 		private void select_video_Click(object sender, EventArgs e) {
 			is_playing = false;
@@ -88,5 +108,15 @@ namespace GUI {
 				play_video();
 			}
 		}
-	}
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void classification_Click(object sender, EventArgs e)
+        {
+
+        }
+    }
 }

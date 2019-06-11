@@ -36,3 +36,41 @@ F:\Visual Studio Temp Projects\GUI\GUI\bin\Debug\zh-cn\ZedGraph.resources.dll
 F:\Visual Studio Temp Projects\GUI\GUI\bin\Debug\zh-tw\ZedGraph.resources.dll
 F:\Visual Studio Temp Projects\GUI\GUI\obj\Debug\GUI.Form1.resources
 F:\Visual Studio Temp Projects\GUI\GUI\obj\Debug\GUI.csprojResolveAssemblyReference.cache
+E:\NightWatcherGUI\GUI\bin\Debug\GUI.exe.config
+E:\NightWatcherGUI\GUI\obj\Debug\GUI.exe
+E:\NightWatcherGUI\GUI\obj\Debug\GUI.pdb
+E:\NightWatcherGUI\GUI\bin\Debug\x64\concrt140.dll
+E:\NightWatcherGUI\GUI\bin\Debug\x64\cvextern.dll
+E:\NightWatcherGUI\GUI\bin\Debug\x64\msvcp140.dll
+E:\NightWatcherGUI\GUI\bin\Debug\x64\opencv_ffmpeg410_64.dll
+E:\NightWatcherGUI\GUI\bin\Debug\x64\vcruntime140.dll
+E:\NightWatcherGUI\GUI\bin\Debug\x86\concrt140.dll
+E:\NightWatcherGUI\GUI\bin\Debug\x86\cvextern.dll
+E:\NightWatcherGUI\GUI\bin\Debug\x86\msvcp140.dll
+E:\NightWatcherGUI\GUI\bin\Debug\x86\opencv_ffmpeg410.dll
+E:\NightWatcherGUI\GUI\bin\Debug\x86\vcruntime140.dll
+E:\NightWatcherGUI\GUI\bin\Debug\GUI.exe
+E:\NightWatcherGUI\GUI\bin\Debug\GUI.pdb
+E:\NightWatcherGUI\GUI\bin\Debug\Emgu.CV.UI.dll
+E:\NightWatcherGUI\GUI\bin\Debug\Emgu.CV.World.dll
+E:\NightWatcherGUI\GUI\bin\Debug\ZedGraph.dll
+E:\NightWatcherGUI\GUI\bin\Debug\Emgu.CV.UI.xml
+E:\NightWatcherGUI\GUI\bin\Debug\Emgu.CV.World.xml
+E:\NightWatcherGUI\GUI\bin\Debug\ZedGraph.xml
+E:\NightWatcherGUI\GUI\bin\Debug\de\ZedGraph.resources.dll
+E:\NightWatcherGUI\GUI\bin\Debug\es\ZedGraph.resources.dll
+E:\NightWatcherGUI\GUI\bin\Debug\fr\ZedGraph.resources.dll
+E:\NightWatcherGUI\GUI\bin\Debug\hu\ZedGraph.resources.dll
+E:\NightWatcherGUI\GUI\bin\Debug\it\ZedGraph.resources.dll
+E:\NightWatcherGUI\GUI\bin\Debug\ja\ZedGraph.resources.dll
+E:\NightWatcherGUI\GUI\bin\Debug\pt\ZedGraph.resources.dll
+E:\NightWatcherGUI\GUI\bin\Debug\ru\ZedGraph.resources.dll
+E:\NightWatcherGUI\GUI\bin\Debug\sk\ZedGraph.resources.dll
+E:\NightWatcherGUI\GUI\bin\Debug\sv\ZedGraph.resources.dll
+E:\NightWatcherGUI\GUI\bin\Debug\tr\ZedGraph.resources.dll
+E:\NightWatcherGUI\GUI\bin\Debug\zh-cn\ZedGraph.resources.dll
+E:\NightWatcherGUI\GUI\bin\Debug\zh-tw\ZedGraph.resources.dll
+E:\NightWatcherGUI\GUI\obj\Debug\GUI.csprojResolveAssemblyReference.cache
+E:\NightWatcherGUI\GUI\obj\Debug\GUI.Form1.resources
+E:\NightWatcherGUI\GUI\obj\Debug\GUI.Properties.Resources.resources
+E:\NightWatcherGUI\GUI\obj\Debug\GUI.csproj.GenerateResource.Cache
