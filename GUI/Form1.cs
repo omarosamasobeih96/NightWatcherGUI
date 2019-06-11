@@ -26,11 +26,20 @@ namespace GUI {
         private const double THRESHOLD = 0.5;
         private const string ANOMALY = "Anomaly";
         private const string NORMAL = "Normal";
-
+        private float x_ratio;
+        private float y_ratio;
+        Rectangle select_video_button_rect;
+        Rectangle results_video_button_rect;
+        Rectangle compress_video_button_rect;
+        Rectangle save_video_button_rect;
+        Rectangle buttons_panel_rect;
+        Rectangle video_picture_box_rect;
+        Rectangle classification_label_rect;
+        Size form_original_size;
         private void ProcessFrame(object sender, EventArgs e) {
 			if (capture != null && capture.Ptr != IntPtr.Zero) {
 				capture.Retrieve(frame, 0);
-				pictureBox1.Image = frame.Bitmap;
+				video_picture_box.Image = frame.Bitmap;
 			}
 		}
 
@@ -44,10 +53,11 @@ namespace GUI {
 					if (running_frame_index == segment_size * (1 + running_segment_index)) running_segment_index += 1;
 					capture.SetCaptureProperty(Emgu.CV.CvEnum.CapProp.PosFrames, running_frame_index);
 					capture.Read(running_frame);
-					pictureBox1.Image = running_frame.Bitmap;
+					video_picture_box.Image = running_frame.Bitmap;
 					running_frame_index += 1;
                     if (predictions[running_segment_index] > THRESHOLD)
                     {
+                       
                         classification.Text = ANOMALY;
                         classification.ForeColor = System.Drawing.Color.Red;
                     }
@@ -83,7 +93,7 @@ namespace GUI {
 			InitializeComponent();
             classification.Visible = false;
             
-            classification.Parent = pictureBox1;
+            classification.Parent = video_picture_box;
          
             classification.BackColor = Color.Transparent;
         }
@@ -111,12 +121,55 @@ namespace GUI {
 
         private void Form1_Load(object sender, EventArgs e)
         {
-
+            form_original_size = this.Size;
+            select_video_button_rect = new Rectangle(select_video_button.Location.X, select_video_button.Location.Y, select_video_button.Width, select_video_button.Height);
+            results_video_button_rect = new Rectangle(results_button.Location.X, results_button.Location.Y,  results_button.Width, results_button.Height);
+            compress_video_button_rect = new Rectangle(compression_button.Location.X, compression_button.Location.Y, compression_button.Width, compression_button.Height);
+            save_video_button_rect = new Rectangle(save_button.Location.X, save_button.Location.Y, save_button.Width, save_button.Height);
+            buttons_panel_rect = new Rectangle(buttons_panel.Location.X, buttons_panel.Location.Y, buttons_panel.Width, buttons_panel.Height);
+            video_picture_box_rect = new Rectangle(video_picture_box.Location.X, video_picture_box.Location.Y, video_picture_box.Width, video_picture_box.Height);
+            classification_label_rect = new Rectangle(classification.Location.X, classification.Location.Y, classification.Width, classification.Height);
         }
 
         private void classification_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void resize_children()
+        {
+             x_ratio = (float)this.Width / (float)form_original_size.Width;
+             y_ratio = (float)this.Height / (float)form_original_size.Height;
+            resize_control(select_video_button_rect, select_video_button);
+            
+            resize_control(results_video_button_rect, results_button);
+            resize_control(compress_video_button_rect, compression_button);
+            resize_control(save_video_button_rect, save_button);
+            resize_control(buttons_panel_rect, buttons_panel);
+            resize_control(video_picture_box_rect, video_picture_box);
+            resize_control(classification_label_rect, classification);
+        }
+        private void resize_control(Rectangle rect, Control control)
+        {
+            
+            int new_x = (int)(rect.X * x_ratio);
+            int new_y = (int)(rect.Y * y_ratio);
+            int new_width = (int)(rect.Width * x_ratio);
+            int new_height = (int)(rect.Height * y_ratio);
+            control.Location = new Point(new_x, new_y);
+            control.Size = new Size(new_width, new_height);
+           
+            
+        }
+
+        private void video_picture_box_Resize(object sender, EventArgs e)
+        {
+
+        }
+
+        private void Form1_Resize(object sender, EventArgs e)
+        {
+            resize_children();
         }
     }
 }
