@@ -202,5 +202,29 @@ namespace GUI {
 			running_frame_index = 0;
 			running_segment_index = 0;
 		}
+
+		private void save_button_Click(object sender, EventArgs e) {
+			if (capture == null) return;
+			SaveFileDialog save_file_dialogue = new SaveFileDialog();
+			save_file_dialogue.Filter = "Video Files (*.mp4, *.flv)| *.mp4;*.flv";
+			if (save_file_dialogue.ShowDialog() == DialogResult.OK) {
+				is_playing = false;
+				int idx = running_frame_index;
+				capture.SetCaptureProperty(Emgu.CV.CvEnum.CapProp.PosFrames, 0);
+				int cc = Convert.ToInt32(capture.GetCaptureProperty(Emgu.CV.CvEnum.CapProp.FourCC));
+				int width = Convert.ToInt32(capture.GetCaptureProperty(Emgu.CV.CvEnum.CapProp.FrameWidth));
+				int height = Convert.ToInt32(capture.GetCaptureProperty(Emgu.CV.CvEnum.CapProp.FrameHeight));
+				string path = save_file_dialogue.FileName;
+				VideoWriter writer = new VideoWriter(path, cc, frame_rate, new Size(width, height), true);
+				Mat f = new Mat();
+				for (int i = 0; i < frame_count; ++i) {
+					capture.Read(f);
+					writer.Write(f);
+				}
+				if (writer.IsOpened) writer.Dispose();
+				capture.SetCaptureProperty(Emgu.CV.CvEnum.CapProp.PosFrames, idx);
+				is_playing = true;
+			}
+		}
 	}
 }

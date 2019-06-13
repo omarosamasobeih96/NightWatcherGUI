@@ -78,6 +78,7 @@
 			this.save_button.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
 			this.save_button.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageAboveText;
 			this.save_button.UseVisualStyleBackColor = true;
+			this.save_button.Click += new System.EventHandler(this.save_button_Click);
 			// 
 			// compression_button
 			// 
