@@ -55,17 +55,19 @@ namespace GUI {
 					video_picture_box.Image = running_frame.Bitmap;
 					if (predictions[running_segment_index] > THRESHOLD)
                     {
-                       
-                        classification.Text = ANOMALY;
-                        classification.ForeColor = System.Drawing.Color.Red;
+						classification.Text = ANOMALY;
+						//classification.Text = ANOMALY + "\n" + (1 + running_segment_index).ToString() + " " + predictions[running_segment_index].ToString();
+						classification.ForeColor = System.Drawing.Color.Red;
                     }
                     else
                     {
-                        classification.Text = NORMAL;
+						classification.Text = NORMAL;
+						//classification.Text = NORMAL + "\n" + (1 + running_segment_index).ToString() + " " + predictions[running_segment_index].ToString();
                         classification.ForeColor = System.Drawing.Color.Green;
                    
                     }
-					await Task.Delay(500 / frame_rate);
+					// await Task.Delay(350);
+					await Task.Delay(1000 / frame_rate);
 					running_frame_index += 1;
 					if (running_frame_index % 16 == 0) running_segment_index += 1;
 				}
