@@ -50,12 +50,10 @@ namespace GUI {
 			try {
                 classification.Visible = true;
 				while (is_playing == true && running_frame_index < frame_count) {
-					if (running_frame_index == segment_size * (1 + running_segment_index)) running_segment_index += 1;
 					capture.SetCaptureProperty(Emgu.CV.CvEnum.CapProp.PosFrames, running_frame_index);
 					capture.Read(running_frame);
 					video_picture_box.Image = running_frame.Bitmap;
-					running_frame_index += 1;
-                    if (predictions[running_segment_index] > THRESHOLD)
+					if (predictions[running_segment_index] > THRESHOLD)
                     {
                        
                         classification.Text = ANOMALY;
@@ -67,8 +65,9 @@ namespace GUI {
                         classification.ForeColor = System.Drawing.Color.Green;
                    
                     }
-
 					await Task.Delay(500 / frame_rate);
+					running_frame_index += 1;
+					if (running_frame_index % 16 == 0) running_segment_index += 1;
 				}
 			}
 			catch (Exception ex) {
@@ -86,7 +85,7 @@ namespace GUI {
 					break;
 				}
 			}
-			return prediction_filename + ".mat";
+			return prediction_filename;
 		}
 
 		public Form1() {
@@ -103,10 +102,6 @@ namespace GUI {
 			OpenFileDialog open_file_dialogue = new OpenFileDialog();
 			open_file_dialogue.Filter = "Video Files (*.mp4, *.flv)| *.mp4;*.flv";
 			if (open_file_dialogue.ShowDialog() == DialogResult.OK) {
-				String prediction_filename = get_prediction_filename(open_file_dialogue.FileName);
-				String[] reader = System.IO.File.ReadAllLines(prediction_filename);
-				predictions = new double[32];
-				for (int i = 0; i < 32; ++i) predictions[i] = Convert.ToDouble(reader[i]);
 				capture = new VideoCapture(open_file_dialogue.FileName);
 				frame_count = Convert.ToInt32(capture.GetCaptureProperty(Emgu.CV.CvEnum.CapProp.FrameCount));
 				segment_size = (frame_count + 31) / 32;
@@ -115,6 +110,20 @@ namespace GUI {
 				running_frame = new Mat();
 				running_frame_index = 0;
 				running_segment_index = 0;
+
+				String prediction_filename = get_prediction_filename(open_file_dialogue.FileName);
+				int segments_cnt = (frame_count + 15) / 16;
+				int files_cnt = (segments_cnt + 31) / 32;
+				predictions = new double[segments_cnt];
+				int al = 0;
+				for (int file_it = 0; file_it < files_cnt; ++file_it) {
+					String[] reader = System.IO.File.ReadAllLines(prediction_filename + "/" + file_it.ToString() + "_C.mat");
+					for (int i = 0; i < 32; ++i) {
+						if (file_it + 1 == files_cnt && i > 0 && Convert.ToDouble(reader[i]) == Convert.ToDouble(reader[i - 1]))
+							continue;
+						predictions[al++] = Convert.ToDouble(reader[i]);
+					}
+				}
 				play_video();
 			}
 		}
