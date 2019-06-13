@@ -13,6 +13,8 @@ using Emgu.CV.Structure;
 namespace GUI {
 	public partial class Form1 : Form {
 
+		private const int FRAMES_PER_SEGMENT = 16;
+		private const int SEGMENTS_PER_FILE = 32;
 		private VideoCapture capture = null;
 		private bool is_playing = false;
 		private int frame_count;
@@ -76,7 +78,7 @@ namespace GUI {
 					// await Task.Delay(350);
 					await Task.Delay(1000 / frame_rate);
 					running_frame_index += 1;
-					if (running_frame_index % 16 == 0) running_segment_index += 1;
+					if (running_frame_index % FRAMES_PER_SEGMENT == 0) running_segment_index += 1;
 				}
 			}
 			catch (Exception ex) {
@@ -113,7 +115,7 @@ namespace GUI {
 			if (open_file_dialogue.ShowDialog() == DialogResult.OK) {
 				capture = new VideoCapture(open_file_dialogue.FileName);
 				frame_count = Convert.ToInt32(capture.GetCaptureProperty(Emgu.CV.CvEnum.CapProp.FrameCount));
-				segment_size = (frame_count + 31) / 32;
+				segment_size = (frame_count + SEGMENTS_PER_FILE - 1) / SEGMENTS_PER_FILE;
 				frame_rate = Convert.ToInt32(capture.GetCaptureProperty(Emgu.CV.CvEnum.CapProp.Fps));
 				is_playing = true;
 				running_frame = new Mat();
@@ -121,13 +123,13 @@ namespace GUI {
 				running_segment_index = 0;
 
 				String prediction_filename = get_prediction_filename(open_file_dialogue.FileName);
-				int segments_cnt = (frame_count + 15) / 16;
-				int files_cnt = (segments_cnt + 31) / 32;
+				int segments_cnt = (frame_count + FRAMES_PER_SEGMENT - 1) / FRAMES_PER_SEGMENT;
+				int files_cnt = (segments_cnt + SEGMENTS_PER_FILE) / SEGMENTS_PER_FILE;
 				predictions = new bool[segments_cnt];
 				int al = 0;
 				for (int file_it = 0; file_it < files_cnt; ++file_it) {
 					String[] reader = System.IO.File.ReadAllLines(prediction_filename + "/" + file_it.ToString() + "_C.mat");
-					for (int i = 0; i < 32; ++i) {
+					for (int i = 0; i < SEGMENTS_PER_FILE; ++i) {
 						if (file_it + 1 == files_cnt && i > 0 && Convert.ToDouble(reader[i]) == Convert.ToDouble(reader[i - 1]))
 							continue;
 						predictions[al++] = Convert.ToDouble(reader[i]) > THRESHOLD;
