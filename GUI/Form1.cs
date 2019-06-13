@@ -51,17 +51,10 @@ namespace GUI {
 			capture.ImageGrabbed += ProcessFrame;
 			frame = new Mat();
 			try {
-                classification.Visible = true;
 				while (is_playing == true && running_frame_index < frame_count) {
 					capture.SetCaptureProperty(Emgu.CV.CvEnum.CapProp.PosFrames, running_frame_index);
 					capture.Read(running_frame);
 					video_picture_box.Image = running_frame.Bitmap;
-
-					bool cur = predictions[running_segment_index];
-					bool pre = cur, nxt = cur;
-					if (running_segment_index > 0 && predictions[running_segment_index - 1] != cur) pre = !pre;
-					if (running_segment_index + 1 < predictions.Length && predictions[running_segment_index + 1] != cur) nxt = !nxt;
-					if (cur != pre && cur != nxt) predictions[running_segment_index] = !cur;
 
 					if (predictions[running_segment_index])
                     {
@@ -110,6 +103,7 @@ namespace GUI {
         }
 
 		private void select_video_Click(object sender, EventArgs e) {
+			classification.Visible = false;
 			is_playing = false;
 			OpenFileDialog open_file_dialogue = new OpenFileDialog();
 			open_file_dialogue.Filter = "Video Files (*.mp4, *.flv)| *.mp4;*.flv";
@@ -125,19 +119,26 @@ namespace GUI {
 
 				String prediction_filename = get_prediction_filename(open_file_dialogue.FileName);
 				int segments_cnt = (frame_count + FRAMES_PER_SEGMENT - 1) / FRAMES_PER_SEGMENT;
-				int files_cnt = (segments_cnt + SEGMENTS_PER_FILE) / SEGMENTS_PER_FILE;
+				int files_cnt = (segments_cnt + SEGMENTS_PER_FILE - 1) / SEGMENTS_PER_FILE;
 				predictions = new bool[segments_cnt];
 				val_predictions = new double[segments_cnt];
 				int al = 0;
 				for (int file_it = 0; file_it < files_cnt; ++file_it) {
 					String[] reader = System.IO.File.ReadAllLines(prediction_filename + "/" + file_it.ToString() + "_C.mat");
-					for (int i = 0; i < SEGMENTS_PER_FILE; ++i) {
+					for (int i = 0; al < segments_cnt && i < SEGMENTS_PER_FILE; ++i) {
 						if (file_it + 1 == files_cnt && i > 0 && Convert.ToDouble(reader[i]) == Convert.ToDouble(reader[i - 1]))
 							continue;
 						val_predictions[al] = Convert.ToDouble(reader[i]);
 						predictions[al] = val_predictions[al] > THRESHOLD;
 						al++;
 					}
+				}
+				for(int i = 0; i < segments_cnt; ++i) {
+					bool cur = predictions[i];
+					bool pre = cur, nxt = cur;
+					if (i > 0 && predictions[i - 1] != cur) pre = !pre;
+					if (i + 1 < predictions.Length && predictions[i + 1] != cur) nxt = !nxt;
+					if (cur != pre && cur != nxt) predictions[i] = !cur;
 				}
 				play_video();
 			}
@@ -195,5 +196,11 @@ namespace GUI {
         {
             resize_children();
         }
-    }
+
+		private void results_button_Click(object sender, EventArgs e) {
+			classification.Visible = true;
+			running_frame_index = 0;
+			running_segment_index = 0;
+		}
+	}
 }
