@@ -24,20 +24,20 @@
 		/// </summary>
 		private void InitializeComponent() {
 			this.buttons_panel = new System.Windows.Forms.Panel();
-			this.classification = new System.Windows.Forms.Label();
-			this.loading_picture_box = new System.Windows.Forms.PictureBox();
-			this.video_picture_box = new System.Windows.Forms.PictureBox();
-			this.pictureBox1 = new System.Windows.Forms.PictureBox();
 			this.pictureBox2 = new System.Windows.Forms.PictureBox();
 			this.save_button = new System.Windows.Forms.Button();
 			this.compression_button = new System.Windows.Forms.Button();
 			this.results_button = new System.Windows.Forms.Button();
 			this.select_video_button = new System.Windows.Forms.Button();
+			this.classification = new System.Windows.Forms.Label();
+			this.loading_picture_box = new System.Windows.Forms.PictureBox();
+			this.video_picture_box = new System.Windows.Forms.PictureBox();
+			this.pictureBox1 = new System.Windows.Forms.PictureBox();
 			this.buttons_panel.SuspendLayout();
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.loading_picture_box)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.video_picture_box)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
 			this.SuspendLayout();
 			// 
 			// buttons_panel
@@ -54,49 +54,6 @@
 			this.buttons_panel.Name = "buttons_panel";
 			this.buttons_panel.Size = new System.Drawing.Size(257, 749);
 			this.buttons_panel.TabIndex = 3;
-			// 
-			// classification
-			// 
-			this.classification.AutoSize = true;
-			this.classification.BackColor = System.Drawing.Color.Transparent;
-			this.classification.Font = new System.Drawing.Font("Century Gothic", 16.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-			this.classification.ForeColor = System.Drawing.Color.White;
-			this.classification.Location = new System.Drawing.Point(670, 76);
-			this.classification.Name = "classification";
-			this.classification.Size = new System.Drawing.Size(198, 36);
-			this.classification.TabIndex = 8;
-			this.classification.Text = "classification";
-			// 
-			// loading_picture_box
-			// 
-			this.loading_picture_box.BackColor = System.Drawing.Color.Transparent;
-			this.loading_picture_box.Image = global::GUI.Properties.Resources.loading;
-			this.loading_picture_box.Location = new System.Drawing.Point(381, 254);
-			this.loading_picture_box.Name = "loading_picture_box";
-			this.loading_picture_box.Size = new System.Drawing.Size(205, 180);
-			this.loading_picture_box.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-			this.loading_picture_box.TabIndex = 9;
-			this.loading_picture_box.TabStop = false;
-			this.loading_picture_box.Click += new System.EventHandler(this.loading_picture_box_Click);
-			// 
-			// video_picture_box
-			// 
-			this.video_picture_box.BackColor = System.Drawing.Color.Black;
-			this.video_picture_box.Location = new System.Drawing.Point(12, 12);
-			this.video_picture_box.Name = "video_picture_box";
-			this.video_picture_box.Size = new System.Drawing.Size(935, 725);
-			this.video_picture_box.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-			this.video_picture_box.TabIndex = 7;
-			this.video_picture_box.TabStop = false;
-			// 
-			// pictureBox1
-			// 
-			this.pictureBox1.BackColor = System.Drawing.Color.Black;
-			this.pictureBox1.Location = new System.Drawing.Point(-7, 0);
-			this.pictureBox1.Name = "pictureBox1";
-			this.pictureBox1.Size = new System.Drawing.Size(966, 755);
-			this.pictureBox1.TabIndex = 6;
-			this.pictureBox1.TabStop = false;
 			// 
 			// pictureBox2
 			// 
@@ -184,6 +141,49 @@
 			this.select_video_button.UseVisualStyleBackColor = true;
 			this.select_video_button.Click += new System.EventHandler(this.select_video_Click);
 			// 
+			// classification
+			// 
+			this.classification.AutoSize = true;
+			this.classification.BackColor = System.Drawing.Color.Transparent;
+			this.classification.Font = new System.Drawing.Font("Century Gothic", 16.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+			this.classification.ForeColor = System.Drawing.Color.White;
+			this.classification.Location = new System.Drawing.Point(60, 58);
+			this.classification.Name = "classification";
+			this.classification.Size = new System.Drawing.Size(192, 34);
+			this.classification.TabIndex = 8;
+			this.classification.Text = "classification";
+			// 
+			// loading_picture_box
+			// 
+			this.loading_picture_box.BackColor = System.Drawing.Color.Transparent;
+			this.loading_picture_box.Image = global::GUI.Properties.Resources.loading;
+			this.loading_picture_box.Location = new System.Drawing.Point(381, 254);
+			this.loading_picture_box.Name = "loading_picture_box";
+			this.loading_picture_box.Size = new System.Drawing.Size(205, 180);
+			this.loading_picture_box.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+			this.loading_picture_box.TabIndex = 9;
+			this.loading_picture_box.TabStop = false;
+			this.loading_picture_box.Click += new System.EventHandler(this.loading_picture_box_Click);
+			// 
+			// video_picture_box
+			// 
+			this.video_picture_box.BackColor = System.Drawing.Color.Black;
+			this.video_picture_box.Location = new System.Drawing.Point(12, 12);
+			this.video_picture_box.Name = "video_picture_box";
+			this.video_picture_box.Size = new System.Drawing.Size(935, 725);
+			this.video_picture_box.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+			this.video_picture_box.TabIndex = 7;
+			this.video_picture_box.TabStop = false;
+			// 
+			// pictureBox1
+			// 
+			this.pictureBox1.BackColor = System.Drawing.Color.Black;
+			this.pictureBox1.Location = new System.Drawing.Point(-7, 0);
+			this.pictureBox1.Name = "pictureBox1";
+			this.pictureBox1.Size = new System.Drawing.Size(966, 755);
+			this.pictureBox1.TabIndex = 6;
+			this.pictureBox1.TabStop = false;
+			// 
 			// Form1
 			// 
 			this.AutoScaleDimensions = new System.Drawing.SizeF(11F, 22F);
@@ -202,10 +202,10 @@
 			this.Load += new System.EventHandler(this.Form1_Load);
 			this.Resize += new System.EventHandler(this.Form1_Resize);
 			this.buttons_panel.ResumeLayout(false);
+			((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.loading_picture_box)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.video_picture_box)).EndInit();
 			((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-			((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
 			this.ResumeLayout(false);
 			this.PerformLayout();
 

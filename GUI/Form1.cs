@@ -62,7 +62,9 @@ namespace GUI {
 					if (predictions[running_segment_index])
                     {
 						//classification.Text = ANOMALY;
-						classification.Text = ANOMALY + "\n" + (1 + running_segment_index).ToString() + " " + val_predictions[running_segment_index].ToString();
+						double val = val_predictions[running_segment_index];
+						val = Math.Max(1 - val, val);
+						classification.Text = ANOMALY + "\n" + "probability :  " + ((val.ToString("#.000") == "1.000") ? "" :"0") + val.ToString("#.000");
 						classification.ForeColor = System.Drawing.Color.Red;
 						pictureBox1.BackColor = System.Drawing.Color.Red;
                     }
@@ -74,7 +76,9 @@ namespace GUI {
 							continue;
 						}
 						//classification.Text = NORMAL;
-						classification.Text = NORMAL + "\n" + (1 + running_segment_index).ToString() + " " + val_predictions[running_segment_index].ToString();
+						double val = val_predictions[running_segment_index];
+						val = Math.Max(1 - val, val);
+						classification.Text = NORMAL + "\n" + "probability :  " + ((val.ToString("#.000") == "1.000") ? "" : "0") + val.ToString("#.000");
 						classification.ForeColor = System.Drawing.Color.White;
 						pictureBox1.BackColor = System.Drawing.Color.Black;
                     }
