@@ -23,6 +23,7 @@ namespace GUI {
 		private Mat running_frame;
 		private Mat frame;
 		private bool[] predictions;
+		private double[] val_predictions;
 		private int segment_size;
 		private int running_segment_index;
         private const double THRESHOLD = 0.5;
@@ -65,13 +66,13 @@ namespace GUI {
 					if (predictions[running_segment_index])
                     {
 						//classification.Text = ANOMALY;
-						classification.Text = ANOMALY + "\n" + (1 + running_segment_index).ToString() + " " + predictions[running_segment_index].ToString();
+						classification.Text = ANOMALY + "\n" + (1 + running_segment_index).ToString() + " " + val_predictions[running_segment_index].ToString();
 						classification.ForeColor = System.Drawing.Color.Red;
                     }
                     else
                     {
 						//classification.Text = NORMAL;
-						classification.Text = NORMAL + "\n" + (1 + running_segment_index).ToString() + " " + predictions[running_segment_index].ToString();
+						classification.Text = NORMAL + "\n" + (1 + running_segment_index).ToString() + " " + val_predictions[running_segment_index].ToString();
                         classification.ForeColor = System.Drawing.Color.Green;
                    
                     }
@@ -126,13 +127,16 @@ namespace GUI {
 				int segments_cnt = (frame_count + FRAMES_PER_SEGMENT - 1) / FRAMES_PER_SEGMENT;
 				int files_cnt = (segments_cnt + SEGMENTS_PER_FILE) / SEGMENTS_PER_FILE;
 				predictions = new bool[segments_cnt];
+				val_predictions = new double[segments_cnt];
 				int al = 0;
 				for (int file_it = 0; file_it < files_cnt; ++file_it) {
 					String[] reader = System.IO.File.ReadAllLines(prediction_filename + "/" + file_it.ToString() + "_C.mat");
 					for (int i = 0; i < SEGMENTS_PER_FILE; ++i) {
 						if (file_it + 1 == files_cnt && i > 0 && Convert.ToDouble(reader[i]) == Convert.ToDouble(reader[i - 1]))
 							continue;
-						predictions[al++] = Convert.ToDouble(reader[i]) > THRESHOLD;
+						val_predictions[al] = Convert.ToDouble(reader[i]);
+						predictions[al] = val_predictions[al] > THRESHOLD;
+						al++;
 					}
 				}
 				play_video();
