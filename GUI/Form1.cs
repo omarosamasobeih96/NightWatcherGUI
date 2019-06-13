@@ -20,7 +20,7 @@ namespace GUI {
 		private int frame_rate;
 		private Mat running_frame;
 		private Mat frame;
-		private double[] predictions;
+		private bool[] predictions;
 		private int segment_size;
 		private int running_segment_index;
         private const double THRESHOLD = 0.5;
@@ -53,16 +53,23 @@ namespace GUI {
 					capture.SetCaptureProperty(Emgu.CV.CvEnum.CapProp.PosFrames, running_frame_index);
 					capture.Read(running_frame);
 					video_picture_box.Image = running_frame.Bitmap;
-					if (predictions[running_segment_index] > THRESHOLD)
+
+					bool cur = predictions[running_segment_index];
+					bool pre = cur, nxt = cur;
+					if (running_segment_index > 0 && predictions[running_segment_index - 1] != cur) pre = !pre;
+					if (running_segment_index + 1 < predictions.Length && predictions[running_segment_index + 1] != cur) nxt = !nxt;
+					if (cur != pre && cur != nxt) predictions[running_segment_index] = !cur;
+
+					if (predictions[running_segment_index])
                     {
-						classification.Text = ANOMALY;
-						//classification.Text = ANOMALY + "\n" + (1 + running_segment_index).ToString() + " " + predictions[running_segment_index].ToString();
+						//classification.Text = ANOMALY;
+						classification.Text = ANOMALY + "\n" + (1 + running_segment_index).ToString() + " " + predictions[running_segment_index].ToString();
 						classification.ForeColor = System.Drawing.Color.Red;
                     }
                     else
                     {
-						classification.Text = NORMAL;
-						//classification.Text = NORMAL + "\n" + (1 + running_segment_index).ToString() + " " + predictions[running_segment_index].ToString();
+						//classification.Text = NORMAL;
+						classification.Text = NORMAL + "\n" + (1 + running_segment_index).ToString() + " " + predictions[running_segment_index].ToString();
                         classification.ForeColor = System.Drawing.Color.Green;
                    
                     }
@@ -116,14 +123,14 @@ namespace GUI {
 				String prediction_filename = get_prediction_filename(open_file_dialogue.FileName);
 				int segments_cnt = (frame_count + 15) / 16;
 				int files_cnt = (segments_cnt + 31) / 32;
-				predictions = new double[segments_cnt];
+				predictions = new bool[segments_cnt];
 				int al = 0;
 				for (int file_it = 0; file_it < files_cnt; ++file_it) {
 					String[] reader = System.IO.File.ReadAllLines(prediction_filename + "/" + file_it.ToString() + "_C.mat");
 					for (int i = 0; i < 32; ++i) {
 						if (file_it + 1 == files_cnt && i > 0 && Convert.ToDouble(reader[i]) == Convert.ToDouble(reader[i - 1]))
 							continue;
-						predictions[al++] = Convert.ToDouble(reader[i]);
+						predictions[al++] = Convert.ToDouble(reader[i]) > THRESHOLD;
 					}
 				}
 				play_video();
