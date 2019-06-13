@@ -9,10 +9,12 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using Emgu.CV;
 using Emgu.CV.Structure;
+using System.Threading;
+using System.IO;
 
 namespace GUI {
 	public partial class Form1 : Form {
-
+		private bool isCompressed;
 		private const int FRAMES_PER_SEGMENT = 16;
 		private const int SEGMENTS_PER_FILE = 32;
 		private VideoCapture capture = null;
@@ -31,13 +33,14 @@ namespace GUI {
         private const string NORMAL = "Normal";
         private float x_ratio;
         private float y_ratio;
-        Rectangle select_video_button_rect;
-        Rectangle results_video_button_rect;
-        Rectangle compress_video_button_rect;
-        Rectangle save_video_button_rect;
-        Rectangle buttons_panel_rect;
-        Rectangle video_picture_box_rect;
-        Rectangle classification_label_rect;
+        private Rectangle select_video_button_rect;
+        private Rectangle results_video_button_rect;
+        private Rectangle compress_video_button_rect;
+        private Rectangle save_video_button_rect;
+        private Rectangle buttons_panel_rect;
+        private Rectangle video_picture_box_rect;
+        private Rectangle classification_label_rect;
+		private Rectangle loading_picture_box_rect;
         Size form_original_size;
         private void ProcessFrame(object sender, EventArgs e) {
 			if (capture != null && capture.Ptr != IntPtr.Zero) {
@@ -47,6 +50,7 @@ namespace GUI {
 		}
 
 		private async void play_video() {
+			if (is_playing == false) return;
 			if (capture == null) return;
 			capture.ImageGrabbed += ProcessFrame;
 			frame = new Mat();
@@ -55,19 +59,24 @@ namespace GUI {
 					capture.SetCaptureProperty(Emgu.CV.CvEnum.CapProp.PosFrames, running_frame_index);
 					capture.Read(running_frame);
 					video_picture_box.Image = running_frame.Bitmap;
-
 					if (predictions[running_segment_index])
                     {
 						//classification.Text = ANOMALY;
 						classification.Text = ANOMALY + "\n" + (1 + running_segment_index).ToString() + " " + val_predictions[running_segment_index].ToString();
 						classification.ForeColor = System.Drawing.Color.Red;
+						pictureBox1.BackColor = System.Drawing.Color.Red;
                     }
                     else
                     {
+						if (isCompressed) {
+							running_frame_index += FRAMES_PER_SEGMENT - running_frame_index % FRAMES_PER_SEGMENT;
+							if (running_frame_index % FRAMES_PER_SEGMENT == 0) running_segment_index += 1;
+							continue;
+						}
 						//classification.Text = NORMAL;
 						classification.Text = NORMAL + "\n" + (1 + running_segment_index).ToString() + " " + val_predictions[running_segment_index].ToString();
-                        classification.ForeColor = System.Drawing.Color.Green;
-                   
+						classification.ForeColor = System.Drawing.Color.White;
+						pictureBox1.BackColor = System.Drawing.Color.Black;
                     }
 					// await Task.Delay(350);
 					await Task.Delay(1000 / frame_rate);
@@ -78,6 +87,9 @@ namespace GUI {
 			catch (Exception ex) {
 				MessageBox.Show(ex.Message);
 			}
+			pictureBox1.Visible = false;
+			classification.Visible = false;
+			// video_picture_box.Image = null;
 		}
 
 		private String get_prediction_filename(String video_filename) {
@@ -94,17 +106,24 @@ namespace GUI {
 		}
 
 		public Form1() {
+
 			InitializeComponent();
             classification.Visible = false;
-            
+			pictureBox1.Visible = false;
+			pictureBox1.BackColor = System.Drawing.Color.Black;
             classification.Parent = video_picture_box;
-         
+			
+			loading_picture_box.Visible = false;
             classification.BackColor = Color.Transparent;
+			loading_picture_box.Parent = video_picture_box;
+			loading_picture_box.BackColor = Color.Transparent;
         }
 
 		private void select_video_Click(object sender, EventArgs e) {
 			classification.Visible = false;
+			pictureBox1.Visible = false;
 			is_playing = false;
+			isCompressed = false;
 			OpenFileDialog open_file_dialogue = new OpenFileDialog();
 			open_file_dialogue.Filter = "Video Files (*.mp4, *.flv)| *.mp4;*.flv";
 			if (open_file_dialogue.ShowDialog() == DialogResult.OK) {
@@ -124,7 +143,12 @@ namespace GUI {
 				val_predictions = new double[segments_cnt];
 				int al = 0;
 				for (int file_it = 0; file_it < files_cnt; ++file_it) {
-					String[] reader = System.IO.File.ReadAllLines(prediction_filename + "/" + file_it.ToString() + "_C.mat");
+					string path = prediction_filename + "/" + file_it.ToString() + "_C.mat";
+					if(!File.Exists(path)) {
+						MessageBox.Show("Prediction files don't exist", "", MessageBoxButtons.OK, MessageBoxIcon.Error);
+						return;
+					}
+					String[] reader = System.IO.File.ReadAllLines(path);
 					for (int i = 0; al < segments_cnt && i < SEGMENTS_PER_FILE; ++i) {
 						if (file_it + 1 == files_cnt && i > 0 && Convert.ToDouble(reader[i]) == Convert.ToDouble(reader[i - 1]))
 							continue;
@@ -144,9 +168,8 @@ namespace GUI {
 			}
 		}
 
-        private void Form1_Load(object sender, EventArgs e)
-        {
-            form_original_size = this.Size;
+        private void Form1_Load(object sender, EventArgs e) {
+			form_original_size = this.Size;
             select_video_button_rect = new Rectangle(select_video_button.Location.X, select_video_button.Location.Y, select_video_button.Width, select_video_button.Height);
             results_video_button_rect = new Rectangle(results_button.Location.X, results_button.Location.Y,  results_button.Width, results_button.Height);
             compress_video_button_rect = new Rectangle(compression_button.Location.X, compression_button.Location.Y, compression_button.Width, compression_button.Height);
@@ -154,6 +177,7 @@ namespace GUI {
             buttons_panel_rect = new Rectangle(buttons_panel.Location.X, buttons_panel.Location.Y, buttons_panel.Width, buttons_panel.Height);
             video_picture_box_rect = new Rectangle(video_picture_box.Location.X, video_picture_box.Location.Y, video_picture_box.Width, video_picture_box.Height);
             classification_label_rect = new Rectangle(classification.Location.X, classification.Location.Y, classification.Width, classification.Height);
+			loading_picture_box_rect = new Rectangle(loading_picture_box.Location.X, loading_picture_box.Location.Y, loading_picture_box.Width, loading_picture_box.Height);
         }
 
         private void classification_Click(object sender, EventArgs e)
@@ -173,6 +197,7 @@ namespace GUI {
             resize_control(buttons_panel_rect, buttons_panel);
             resize_control(video_picture_box_rect, video_picture_box);
             resize_control(classification_label_rect, classification);
+			resize_control(loading_picture_box_rect, loading_picture_box);
         }
         private void resize_control(Rectangle rect, Control control)
         {
@@ -198,17 +223,25 @@ namespace GUI {
         }
 
 		private void results_button_Click(object sender, EventArgs e) {
+			if (capture == null) return;
 			classification.Visible = true;
+			pictureBox1.Visible = true;
+			
 			running_frame_index = 0;
 			running_segment_index = 0;
 		}
 
+
 		private void save_button_Click(object sender, EventArgs e) {
+			pictureBox1.Visible = false;
+			classification.Visible = false;
 			if (capture == null) return;
+			loading_picture_box.Visible = true;
+			
+			is_playing = false;
 			SaveFileDialog save_file_dialogue = new SaveFileDialog();
 			save_file_dialogue.Filter = "Video Files (*.mp4, *.flv)| *.mp4;*.flv";
 			if (save_file_dialogue.ShowDialog() == DialogResult.OK) {
-				is_playing = false;
 				int idx = running_frame_index;
 				capture.SetCaptureProperty(Emgu.CV.CvEnum.CapProp.PosFrames, 0);
 				int cc = Convert.ToInt32(capture.GetCaptureProperty(Emgu.CV.CvEnum.CapProp.FourCC));
@@ -219,12 +252,42 @@ namespace GUI {
 				Mat f = new Mat();
 				for (int i = 0; i < frame_count; ++i) {
 					capture.Read(f);
+					if(isCompressed)
+						if (!predictions[i / FRAMES_PER_SEGMENT]) continue;
 					writer.Write(f);
 				}
 				if (writer.IsOpened) writer.Dispose();
 				capture.SetCaptureProperty(Emgu.CV.CvEnum.CapProp.PosFrames, idx);
-				is_playing = true;
 			}
+			loading_picture_box.Visible = false;
+			
+			is_playing = true;
+			play_video();
+		}
+
+		private void classification_Click_1(object sender, EventArgs e) {
+
+		}
+
+		private void video_picture_box_Click(object sender, EventArgs e) {
+
+		}
+
+		private void video_picture_box_Click_1(object sender, EventArgs e) {
+
+		}
+
+		private void loading_picture_box_Click(object sender, EventArgs e) {
+
+		}
+
+		private void compression_button_Click(object sender, EventArgs e) {
+			pictureBox1.Visible = false;
+			classification.Visible = false;
+			if (capture == null) return;
+			running_segment_index = 0;
+			running_frame_index = 0;
+			isCompressed = true;
 		}
 	}
 }
