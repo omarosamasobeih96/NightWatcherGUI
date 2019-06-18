@@ -140,7 +140,13 @@ namespace GUI {
 				running_frame_index = 0;
 				running_segment_index = 0;
 
-				String prediction_filename = get_prediction_filename(open_file_dialogue.FileName);
+				MessageBox.Show("Choose predictions folder");
+
+				FolderBrowserDialog fbd = new FolderBrowserDialog();
+
+				if (fbd.ShowDialog() != DialogResult.OK) return;
+
+				String prediction_filename = fbd.SelectedPath;
 				int segments_cnt = (frame_count + FRAMES_PER_SEGMENT - 1) / FRAMES_PER_SEGMENT;
 				int files_cnt = (segments_cnt + SEGMENTS_PER_FILE - 1) / SEGMENTS_PER_FILE;
 				predictions = new bool[segments_cnt];
