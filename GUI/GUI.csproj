@@ -98,6 +98,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="License-LGPL.txt" />
+    <None Include="Resources\Webp.net-resizeimage %2816%29.png" />
+    <None Include="Resources\Webp.net-resizeimage %2815%29.png" />
+    <None Include="Resources\Webp.net-resizeimage %2814%29.png" />
+    <None Include="Resources\Webp.net-resizeimage %2813%29.png" />
+    <None Include="Resources\Webp.net-resizeimage %2812%29.png" />
+    <None Include="Resources\Webp.net-resizeimage %2811%29.png" />
     <None Include="Resources\giphy.gif" />
     <None Include="Resources\loading.png" />
     <None Include="Resources\free-loading-icon-14.jpg" />

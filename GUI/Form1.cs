@@ -82,6 +82,7 @@ namespace GUI {
 						classification.ForeColor = System.Drawing.Color.White;
 						pictureBox1.BackColor = System.Drawing.Color.Black;
                     }
+                    trackBar1.Value = running_frame_index;
 					// await Task.Delay(350);
 					await Task.Delay(1000 / frame_rate);
 					running_frame_index += 1;
@@ -91,8 +92,8 @@ namespace GUI {
 			catch (Exception ex) {
 				MessageBox.Show(ex.Message);
 			}
-			pictureBox1.Visible = false;
-			classification.Visible = false;
+			//pictureBox1.Visible = false;
+			//classification.Visible = false;
 			// video_picture_box.Image = null;
 		}
 
@@ -139,7 +140,9 @@ namespace GUI {
 				running_frame = new Mat();
 				running_frame_index = 0;
 				running_segment_index = 0;
-
+                trackBar1.Minimum = 0;
+                trackBar1.Maximum = frame_count-1;
+                trackBar1.Value = 0;
 				MessageBox.Show("Choose predictions folder");
 
 				FolderBrowserDialog fbd = new FolderBrowserDialog();
@@ -299,5 +302,56 @@ namespace GUI {
 			running_frame_index = 0;
 			isCompressed = true;
 		}
-	}
+
+        private void trackBar1_Scroll(object sender, EventArgs e)
+        {
+            if (capture != null)
+            {
+                int temp = running_frame_index;
+                running_frame_index = trackBar1.Value;
+                running_segment_index = running_frame_index / FRAMES_PER_SEGMENT;
+                if (temp >= frame_count)
+                {
+                    play_video();
+                }
+               
+            }
+        }
+
+        private void pause_button_Click(object sender, EventArgs e)
+        {
+            is_playing = false;
+        }
+
+        private void replay_button_Click(object sender, EventArgs e)
+        {
+            int temp = running_frame_index;
+            running_frame_index = 0;
+            running_segment_index = 0;
+           if(is_playing==false||temp>=frame_count)
+            {
+                is_playing = true;
+                play_video();
+            }
+            
+        }
+
+        private void panel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            if (capture != null)
+            {
+                is_playing = true;
+                play_video();
+            }
+            else
+            {
+                is_playing = false;
+            }
+        }
+    }
 }
