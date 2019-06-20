@@ -55,12 +55,15 @@ namespace GUI {
 			capture.ImageGrabbed += ProcessFrame;
 			frame = new Mat();
 			try {
+                //for handling trackbar value while viewing the compressed video
+               // int compressed_frames_count = 0;
 				while (is_playing == true && running_frame_index < frame_count) {
 					capture.SetCaptureProperty(Emgu.CV.CvEnum.CapProp.PosFrames, running_frame_index);
 					capture.Read(running_frame);
 					video_picture_box.Image = running_frame.Bitmap;
 					if (predictions[running_segment_index])
                     {
+                        //++compressed_frames_count;
 						//classification.Text = ANOMALY;
 						double val = val_predictions[running_segment_index];
 						val = Math.Max(1 - val, val);
@@ -75,6 +78,7 @@ namespace GUI {
 							if (running_frame_index % FRAMES_PER_SEGMENT == 0) running_segment_index += 1;
 							continue;
 						}
+                        //compressed_frames_count++;
 						//classification.Text = NORMAL;
 						double val = val_predictions[running_segment_index];
 						val = Math.Max(1 - val, val);
@@ -301,6 +305,15 @@ namespace GUI {
 			running_segment_index = 0;
 			running_frame_index = 0;
 			isCompressed = true;
+            //set trackbar maximum value to number of compressed frames only
+            /*int compressed_frames = 0;
+            for(int i = 0; i < frame_count; ++i)
+            {
+                if (predictions[i / FRAMES_PER_SEGMENT]) ++compressed_frames;
+            }
+            trackBar1.Maximum = compressed_frames;
+            */
+            
 		}
 
         private void trackBar1_Scroll(object sender, EventArgs e)
@@ -345,8 +358,11 @@ namespace GUI {
         {
             if (capture != null)
             {
-                is_playing = true;
-                play_video();
+                if (is_playing == false)
+                {
+                    is_playing = true;
+                    play_video();
+                }
             }
             else
             {
