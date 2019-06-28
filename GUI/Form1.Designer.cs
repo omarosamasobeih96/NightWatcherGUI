@@ -248,7 +248,7 @@
             this.video_picture_box.BackColor = System.Drawing.Color.Black;
             this.video_picture_box.Location = new System.Drawing.Point(12, 12);
             this.video_picture_box.Name = "video_picture_box";
-            this.video_picture_box.Size = new System.Drawing.Size(942, 541);
+            this.video_picture_box.Size = new System.Drawing.Size(942, 533);
             this.video_picture_box.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.video_picture_box.TabIndex = 7;
             this.video_picture_box.TabStop = false;
@@ -258,7 +258,7 @@
             this.pictureBox1.BackColor = System.Drawing.Color.Black;
             this.pictureBox1.Location = new System.Drawing.Point(2, -21);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(966, 582);
+            this.pictureBox1.Size = new System.Drawing.Size(961, 577);
             this.pictureBox1.TabIndex = 6;
             this.pictureBox1.TabStop = false;
             // 
