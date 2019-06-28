@@ -14,7 +14,7 @@ namespace GUI {
 		static void Main() {
 			Application.EnableVisualStyles();
 			Application.SetCompatibleTextRenderingDefault(false);
-			Form1 form1 = new Form1();
+			NightWatcher form1 = new NightWatcher();
 			// Define the border style of the form to a dialog box.
 			form1.FormBorderStyle = FormBorderStyle.FixedDialog;
 

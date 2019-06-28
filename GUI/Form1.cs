@@ -13,7 +13,7 @@ using System.Threading;
 using System.IO;
 
 namespace GUI {
-	public partial class Form1 : Form {
+	public partial class NightWatcher : Form {
 		private bool isCompressed;
 		private const int FRAMES_PER_SEGMENT = 16;
 		private const int SEGMENTS_PER_FILE = 32;
@@ -55,6 +55,7 @@ namespace GUI {
 			capture.ImageGrabbed += ProcessFrame;
 			frame = new Mat();
 			try {
+                double clock_wait = 0;
                 //for handling trackbar value while viewing the compressed video
                // int compressed_frames_count = 0;
 				while (is_playing == true && running_frame_index < frame_count) {
@@ -66,7 +67,7 @@ namespace GUI {
                         //++compressed_frames_count;
 						//classification.Text = ANOMALY;
 						double val = val_predictions[running_segment_index];
-						val = Math.Max(1 - val, val);
+						//val = Math.Max(1 - val, val);
 						classification.Text = ANOMALY + "\n" + "probability :  " + ((val.ToString("#.000") == "1.000") ? "" :"0") + val.ToString("#.000");
 						classification.ForeColor = System.Drawing.Color.Red;
 						pictureBox1.BackColor = System.Drawing.Color.Red;
@@ -80,8 +81,9 @@ namespace GUI {
 						}
                         //compressed_frames_count++;
 						//classification.Text = NORMAL;
-						double val = val_predictions[running_segment_index];
-						val = Math.Max(1 - val, val);
+						double val = 1-val_predictions[running_segment_index];
+						//val = Math.Max(1 - val, val);
+                        
 						classification.Text = NORMAL + "\n" + "probability :  " + ((val.ToString("#.000") == "1.000") ? "" : "0") + val.ToString("#.000");
 						classification.ForeColor = System.Drawing.Color.White;
 						pictureBox1.BackColor = System.Drawing.Color.Black;
@@ -114,7 +116,7 @@ namespace GUI {
 			return prediction_filename;
 		}
 
-		public Form1() {
+		public NightWatcher() {
 
 			InitializeComponent();
             classification.Visible = false;
@@ -244,8 +246,8 @@ namespace GUI {
 			classification.Visible = true;
 			pictureBox1.Visible = true;
 			
-			running_frame_index = 0;
-			running_segment_index = 0;
+			//running_frame_index = 0;
+			//running_segment_index = 0;
 		}
 
 
@@ -299,12 +301,18 @@ namespace GUI {
 		}
 
 		private void compression_button_Click(object sender, EventArgs e) {
-			pictureBox1.Visible = false;
-			classification.Visible = false;
-			if (capture == null) return;
-			running_segment_index = 0;
-			running_frame_index = 0;
-			isCompressed = true;
+            
+                pictureBox1.Visible = false;
+                classification.Visible = false;
+                if (capture == null) return;
+                running_segment_index = 0;
+                running_frame_index = 0;
+                isCompressed = true;
+               if (is_playing == false)
+               {
+                is_playing = true;
+                play_video();
+               }
             //set trackbar maximum value to number of compressed frames only
             /*int compressed_frames = 0;
             for(int i = 0; i < frame_count; ++i)
@@ -313,8 +321,9 @@ namespace GUI {
             }
             trackBar1.Maximum = compressed_frames;
             */
-            
-		}
+
+
+        }
 
         private void trackBar1_Scroll(object sender, EventArgs e)
         {
@@ -333,18 +342,23 @@ namespace GUI {
 
         private void pause_button_Click(object sender, EventArgs e)
         {
-            is_playing = false;
+            if (capture != null) {
+                is_playing = false;
+            }
         }
 
         private void replay_button_Click(object sender, EventArgs e)
         {
-            int temp = running_frame_index;
-            running_frame_index = 0;
-            running_segment_index = 0;
-           if(is_playing==false||temp>=frame_count)
+            if (capture != null)
             {
-                is_playing = true;
-                play_video();
+                int temp = running_frame_index;
+                running_frame_index = 0;
+                running_segment_index = 0;
+                if (is_playing == false || temp >= frame_count)
+                {
+                    is_playing = true;
+                    play_video();
+                }
             }
             
         }
