@@ -42,6 +42,7 @@ namespace GUI {
         private Rectangle classification_label_rect;
 		private Rectangle loading_picture_box_rect;
         Size form_original_size;
+        private const string predictions_files_path = "E:\\output";
         private void ProcessFrame(object sender, EventArgs e) {
 			if (capture != null && capture.Ptr != IntPtr.Zero) {
 				capture.Retrieve(frame, 0);
@@ -107,14 +108,18 @@ namespace GUI {
 			String prediction_filename = "";
 			int len = video_filename.Length;
 			for(int i = len - 1; i >= 0; --i) {
-				if(video_filename[i] == '.') {
-					for (int j = 0; j < i; ++j)
-						prediction_filename += video_filename[j];
-					break;
+				if(video_filename[i] == '\\') {
+                    for (int j = i + 1; j < len; ++j)
+                    {
+                        if (video_filename[j] == '.') break;
+                        prediction_filename += video_filename[j];
+                    }
+                    break;
 				}
 			}
 			return prediction_filename;
 		}
+       
 
 		public NightWatcher() {
 
@@ -149,14 +154,16 @@ namespace GUI {
                 trackBar1.Minimum = 0;
                 trackBar1.Maximum = frame_count-1;
                 trackBar1.Value = 0;
-				MessageBox.Show("Choose predictions folder");
+                //MessageBox.Show("Choose predictions folder");
 
-				FolderBrowserDialog fbd = new FolderBrowserDialog();
+                //FolderBrowserDialog fbd = new FolderBrowserDialog();
 
-				if (fbd.ShowDialog() != DialogResult.OK) return;
+                //if (fbd.ShowDialog() != DialogResult.OK) return;
 
-				String prediction_filename = fbd.SelectedPath;
-				int segments_cnt = (frame_count + FRAMES_PER_SEGMENT - 1) / FRAMES_PER_SEGMENT;
+
+                String prediction_filename = predictions_files_path+'\\'+ get_prediction_filename(open_file_dialogue.FileName);
+              
+                int segments_cnt = (frame_count + FRAMES_PER_SEGMENT - 1) / FRAMES_PER_SEGMENT;
 				int files_cnt = (segments_cnt + SEGMENTS_PER_FILE - 1) / SEGMENTS_PER_FILE;
 				predictions = new bool[segments_cnt];
 				val_predictions = new double[segments_cnt];
